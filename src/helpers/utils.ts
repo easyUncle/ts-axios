@@ -7,3 +7,7 @@ export function isObject(obj: any): obj is Object {
 export function isDate(obj: any): obj is Date {
   return toString.call(obj) === '[object Date]'
 }
+
+export function isPlainObject(obj: any): obj is Object {
+  return toString.call(obj) === '[object Object]'
+}
