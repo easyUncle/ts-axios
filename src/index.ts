@@ -14,7 +14,6 @@ function proccessConfig(config: AxiosRequestConfig): void {
   config.url = transformUrl(config)
   config.headers = transformHeaders(config)
   config.data = transformRequestBody(config)
-  console.log(config.data)
 }
 function transformUrl(config: AxiosRequestConfig): string {
   const { url, params } = config
