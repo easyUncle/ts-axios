@@ -1,4 +1,5 @@
 import { parseHeaders } from '../helpers/header'
+import {createError} from '../helpers/error'
 import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../type'
 
 export default function xhr(config: AxiosRequestConfig): AxiosPromise {
@@ -13,7 +14,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
     if (timeout) {
       request.timeout = timeout
     }
-    request.open(method.toUpperCase(), url)
+    request.open(method.toUpperCase(), url!)
     Object.keys(headers).forEach(key => {
       if (data === null && key.toLowerCase() === 'content-type') {
         delete headers[key]
@@ -44,11 +45,13 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
     }
     //网络异常处理
     request.onerror = function() {
-      throw new Error('Network Error')
+      reject(createError('Network Error',config,null,request))
     }
     //请求超时处理
     request.ontimeout = function() {
-      throw new Error(`Timeout of ${timeout} ms exceeded`)
+        reject(
+            createError(`Timeout of ${config.timeout} ms exceeded`, config, 'ECONNABORTED', request)
+          )
     }
     request.send(data)
     //响应结果处理
@@ -56,7 +59,15 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       if (request.status >= 200 && request.status < 300) {
         resolve(res)
       } else {
-        reject(new Error(`Request failed with status code ${res.status}`))
+        reject(
+            createError(
+              `Request failed with status code ${res.status}`,
+              config,
+              null,
+              request,
+              res
+            )
+          )
       }
     }
   })
