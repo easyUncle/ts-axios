@@ -1,59 +1,115 @@
-import { AxiosRequestConfig, AxiosPromise , Methods} from "../type";
-import { dispatchRequest } from "./dispatchRequest";
+import {
+  AxiosRequestConfig,
+  AxiosPromise,
+  Methods,
+  AxiosResponse,
+  ResolvedFn,
+  RejectedFn
+} from '../type'
+import { dispatchRequest } from './dispatchRequest'
+import InterceptorManager from './InterceptorManager'
+
+interface Interceptors {
+  request: InterceptorManager<AxiosRequestConfig>
+  response: InterceptorManager<AxiosResponse>
+}
+interface PromiseChain<T> {
+  resolved: ResolvedFn<T> | ((config: AxiosRequestConfig) => AxiosPromise)
+  rejected?: RejectedFn
+}
 export default class Axios {
-    constructor(){
-
+  interceptors: Interceptors
+  constructor() {
+    this.interceptors = {
+      request: new InterceptorManager<AxiosRequestConfig>(),
+      response: new InterceptorManager<AxiosResponse>()
     }
-    request(url:any,config:AxiosRequestConfig):AxiosPromise{
-        if(typeof url === 'string'){
-            config = config || {}
-            config.url = url
-        }else {
-            config = url
-        }
-        return dispatchRequest(config)
-    }
-    
-    get(url:string,config?:AxiosRequestConfig):AxiosPromise{
-        return this. _axiosRequestWithoutData('get',url,config)
+  }
+  request(url: any, config?: any): AxiosPromise {
+    if (typeof url === 'string') {
+      config = config || {}
+      config.url = url
+    } else {
+      config = url
     }
 
-    delete(url:string,config?:AxiosRequestConfig):AxiosPromise{
-        return this. _axiosRequestWithoutData('delete',url,config,)
+    const chain: PromiseChain<any>[] = [
+      {
+        resolved: dispatchRequest,
+        rejected: undefined
+      }
+    ]
+
+    this.interceptors.request.forEach(interceptor => {
+      chain.unshift(interceptor)
+    })
+
+    this.interceptors.response.forEach(interceptor => {
+      chain.push(interceptor)
+    })
+
+    let promise = Promise.resolve(config)
+    while (chain.length) {
+      const { resolved, rejected } = chain.shift()!
+      promise = promise.then(resolved, rejected)
     }
 
-    head(url:string,config?:AxiosRequestConfig):AxiosPromise{
-        return this. _axiosRequestWithoutData('head',url,config,)
-    }
+    return promise
+  }
 
-    options(url:string,config?:AxiosRequestConfig):AxiosPromise{
-        return this. _axiosRequestWithoutData('options',url,config)
-    }
+  get(url: string, config?: AxiosRequestConfig): AxiosPromise {
+    return this._axiosRequestWithoutData('get', url, config)
+  }
 
-    post(url:string,data?:any,config?:AxiosRequestConfig):AxiosPromise{
-        return this._axiosRequestWithData('post',url,data,config)
-    }
+  delete(url: string, config?: AxiosRequestConfig): AxiosPromise {
+    return this._axiosRequestWithoutData('delete', url, config)
+  }
 
-    put(url:string,data?:any,config?:AxiosRequestConfig):AxiosPromise{
-        return this._axiosRequestWithData('put',url,data,config)
-    }
+  head(url: string, config?: AxiosRequestConfig): AxiosPromise {
+    return this._axiosRequestWithoutData('head', url, config)
+  }
 
-    patch(url:string,data?:any,config?:AxiosRequestConfig):AxiosPromise{
-        return this._axiosRequestWithData('patch',url,data,config)
-    }
+  options(url: string, config?: AxiosRequestConfig): AxiosPromise {
+    return this._axiosRequestWithoutData('options', url, config)
+  }
 
-    _axiosRequestWithoutData(method:Methods,url:string,config?:AxiosRequestConfig):AxiosPromise {
-        return dispatchRequest(Object.assign(config || {} , {
-            url,
-            method
-        }))
-    }
+  post(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise {
+    return this._axiosRequestWithData('post', url, data, config)
+  }
 
-    _axiosRequestWithData(method:Methods,url:string,data?:any,config?:AxiosRequestConfig):AxiosPromise {
-        return dispatchRequest(Object.assign(config || {} , {
-            url,
-            method,
-            data
-        }))
-    }
+  put(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise {
+    return this._axiosRequestWithData('put', url, data, config)
+  }
+
+  patch(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise {
+    return this._axiosRequestWithData('patch', url, data, config)
+  }
+
+  _axiosRequestWithoutData(
+    method: Methods,
+    url: string,
+    config?: AxiosRequestConfig
+  ): AxiosPromise {
+    return dispatchRequest(
+      Object.assign(config || {}, {
+        url,
+        method
+      })
+    )
+  }
+
+  _axiosRequestWithData(
+    method: Methods,
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): AxiosPromise {
+    return dispatchRequest(
+      Object.assign(config || {}, {
+        url,
+        method,
+        data
+      })
+    )
+  }
 }
