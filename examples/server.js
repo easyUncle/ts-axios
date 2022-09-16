@@ -38,6 +38,8 @@ registerExtendRouter()
 
 registerInterceptorRouter()
 
+registerConfigRouter()
+
 app.use(router)
 
 const port = process.env.PORT || 8080
@@ -145,3 +147,13 @@ function registerInterceptorRouter() {
     res.end('hello')
   })
 }
+
+function registerConfigRouter(){
+  router.post('/config/post',function(req,res){
+    res.end('config')
+  })
+  router.get('/config/get',function(req,res){
+    res.end('config-get')
+  })
+}
+
