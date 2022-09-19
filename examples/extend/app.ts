@@ -68,5 +68,4 @@ async function test() {
     console.log(user.result.name)
   }
 }
-
 test()

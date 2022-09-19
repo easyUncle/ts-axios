@@ -22,6 +22,9 @@ export interface AxiosRequestConfig {
   headers?: any
   responseType?: XMLHttpRequestResponseType
   timeout?: number,
+  transformRequest?:Transformer | Transformer[],
+  transformResponse?:Transformer | Transformer[],
+  cancelToken?:CancelToken
   [propName:string]:any
 }
 
@@ -30,7 +33,7 @@ export interface AxiosResponse<T=any> {
   status: number
   statusText: string
   config: AxiosRequestConfig
-  headers: any
+  headers: any,
 }
 
 export interface AxiosPromise<T=any> extends Promise<AxiosResponse<T>> {}
@@ -96,4 +99,25 @@ export interface ResolvedFn<T> {
 
 export interface RejectedFn {
   (err:any) : any
+}
+
+export interface Transformer {
+  (data:any,headers?:any):any
+}
+
+export interface AxiosStatic extends AxiosInstance {
+  create(config?:AxiosRequestConfig):AxiosInstance
+}
+
+export interface CancelToken {
+  promise: Promise<string>
+  reason?: string
+}
+
+export interface Canceler {
+  (message?: string): void
+}
+
+export interface CancelExecutor {
+  (cancel: Canceler): void
 }

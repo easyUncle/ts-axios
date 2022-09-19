@@ -21,7 +21,6 @@ export function extend<T,U>(to:T,from:U):T & U{
 
 export function deepMerge(...objs:any[]):any{
   let result = Object.create(null)
-  console.log(objs)
   objs.forEach(obj=>{
     if(obj){
       Object.keys(obj).forEach(key=>{

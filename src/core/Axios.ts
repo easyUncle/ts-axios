@@ -4,7 +4,7 @@ import {
   Methods,
   AxiosResponse,
   ResolvedFn,
-  RejectedFn
+  RejectedFn,
 } from '../type'
 import { dispatchRequest } from './dispatchRequest'
 import InterceptorManager from './InterceptorManager'
