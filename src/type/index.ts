@@ -107,11 +107,18 @@ export interface Transformer {
 
 export interface AxiosStatic extends AxiosInstance {
   create(config?:AxiosRequestConfig):AxiosInstance
+
+  CancelToken: CancelTokenStatic
+  Cancel: CancelStatic
+  isCancel: IsCancel
 }
 
+
 export interface CancelToken {
-  promise: Promise<string>
-  reason?: string
+  promise: Promise<Cancel>
+  reason?: Cancel
+
+  throwIfRequested(): void
 }
 
 export interface Canceler {
@@ -120,4 +127,27 @@ export interface Canceler {
 
 export interface CancelExecutor {
   (cancel: Canceler): void
+}
+
+export interface CancelSource {
+  token:CancelToken
+  cancel:Canceler
+}
+
+export interface CancelTokenStatic {
+  new(executor:CancelExecutor):CancelToken
+
+  source():CancelSource
+}
+
+export interface Cancel {
+  message?:string
+}
+
+export interface CancelStatic {
+  new(message?:string):Cancel
+}
+
+export interface IsCancel {
+  (val:any):boolean
 }
