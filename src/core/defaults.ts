@@ -24,7 +24,9 @@ const defaults: AxiosRequestConfig = {
     function(data: any): any {
       return transformResponseData(data)
     }
-  ]
+  ],
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN'
 }
 
 const requestWithoutData = ['get', 'delete', 'head', 'options']

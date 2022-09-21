@@ -21,22 +21,27 @@ export interface AxiosRequestConfig {
   params?: any
   headers?: any
   responseType?: XMLHttpRequestResponseType
-  timeout?: number,
-  transformRequest?:Transformer | Transformer[],
-  transformResponse?:Transformer | Transformer[],
-  cancelToken?:CancelToken
-  [propName:string]:any
+  timeout?: number
+  transformRequest?: Transformer | Transformer[]
+  transformResponse?: Transformer | Transformer[]
+  cancelToken?: CancelToken
+  withCredentials?: boolean
+  xsrfCookieName?: string
+  xsrfHeaderName?: string
+  onUploadProgress?: (e: ProgressEvent) => void
+  onDownloadProgress?: (e: ProgressEvent) => void
+  [propName: string]: any
 }
 
-export interface AxiosResponse<T=any> {
+export interface AxiosResponse<T = any> {
   data: T
   status: number
   statusText: string
   config: AxiosRequestConfig
-  headers: any,
+  headers: any
 }
 
-export interface AxiosPromise<T=any> extends Promise<AxiosResponse<T>> {}
+export interface AxiosPromise<T = any> extends Promise<AxiosResponse<T>> {}
 
 export interface AxiosError extends Error {
   config: AxiosRequestConfig
@@ -57,62 +62,61 @@ export interface AxiosError extends Error {
  */
 
 export interface Axios {
-  defaults:AxiosRequestConfig
+  defaults: AxiosRequestConfig
 
-  interceptors:{
-    request:AxiosInterceptorManager<AxiosRequestConfig>,
-    response:AxiosInterceptorManager<AxiosResponse>
+  interceptors: {
+    request: AxiosInterceptorManager<AxiosRequestConfig>
+    response: AxiosInterceptorManager<AxiosResponse>
   }
-  request<T=any>(config: AxiosRequestConfig): AxiosPromise<T>
+  request<T = any>(config: AxiosRequestConfig): AxiosPromise<T>
 
-  get<T=any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
+  get<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
 
-  delete<T=any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
+  delete<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
 
-  head<T=any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
+  head<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
 
-  options<T=any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
+  options<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
 
-  post<T=any>(url: string,data?: any, config?: AxiosRequestConfig): AxiosPromise<T>
+  post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T>
 
-  put<T=any>(url: string,data?: any, config?: AxiosRequestConfig): AxiosPromise<T>
+  put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T>
 
-  patch<T=any>(url: string,data?: any, config?: AxiosRequestConfig): AxiosPromise<T>
+  patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T>
 }
 
 export interface AxiosInstance extends Axios {
-  <T=any>(config: AxiosRequestConfig): AxiosPromise<T>
-  <T=any>(url:string,config?:AxiosRequestConfig):AxiosPromise<T>
+  <T = any>(config: AxiosRequestConfig): AxiosPromise<T>
+  <T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
 }
 
 //定义拦截器接口，请求拦截器接口和响应拦截接口
 export interface AxiosInterceptorManager<T> {
-  use(resolveFn:ResolvedFn<T>,rejectedFn?:RejectedFn):number
+  use(resolveFn: ResolvedFn<T>, rejectedFn?: RejectedFn): number
 
-  eject(id:number):void
+  eject(id: number): void
 }
 
 //因为请求拦截器传入的参数为config,而响应拦截器处理的参数为response，所以这里使用泛型
 export interface ResolvedFn<T> {
-  (val:T):T | Promise<T>
+  (val: T): T | Promise<T>
 }
 
 export interface RejectedFn {
-  (err:any) : any
+  (err: any): any
 }
 
 export interface Transformer {
-  (data:any,headers?:any):any
+  (data: any, headers?: any): any
 }
 
 export interface AxiosStatic extends AxiosInstance {
-  create(config?:AxiosRequestConfig):AxiosInstance
+  create(config?: AxiosRequestConfig): AxiosInstance
 
   CancelToken: CancelTokenStatic
   Cancel: CancelStatic
   isCancel: IsCancel
 }
-
 
 export interface CancelToken {
   promise: Promise<Cancel>
@@ -130,24 +134,24 @@ export interface CancelExecutor {
 }
 
 export interface CancelSource {
-  token:CancelToken
-  cancel:Canceler
+  token: CancelToken
+  cancel: Canceler
 }
 
 export interface CancelTokenStatic {
-  new(executor:CancelExecutor):CancelToken
+  new (executor: CancelExecutor): CancelToken
 
-  source():CancelSource
+  source(): CancelSource
 }
 
 export interface Cancel {
-  message?:string
+  message?: string
 }
 
 export interface CancelStatic {
-  new(message?:string):Cancel
+  new (message?: string): Cancel
 }
 
 export interface IsCancel {
-  (val:any):boolean
+  (val: any): boolean
 }

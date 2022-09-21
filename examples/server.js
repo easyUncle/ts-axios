@@ -1,12 +1,19 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const webpack = require('webpack')
+const path = require('path')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const WebpackConfig = require('./webpack.config')
 
 const app = express()
 const compiler = webpack(WebpackConfig)
+const multipart = require('connect-multiparty')
+
+app.use(multipart({
+  uploadDir: path.resolve(__dirname, 'upload-file')
+}))
 
 app.use(webpackDevMiddleware(compiler, {
   publicPath: '/__build__/',
@@ -16,15 +23,23 @@ app.use(webpackDevMiddleware(compiler, {
   }
 }))
 
+require('./server2')
+
 app.use(webpackHotMiddleware(compiler))
 
-app.use(express.static(__dirname))
+app.use(express.static(__dirname, {
+  setHeaders (res) {
+    res.cookie('XSRF-TOKEN-D', '1234abc')
+  }
+}))
 
 app.use(bodyParser.json())
 // app.use(bodyParser.text())
 app.use(bodyParser.urlencoded({
   extended: true
 }))
+
+app.use(cookieParser())
 
 const router = express.Router()
 
@@ -41,6 +56,8 @@ registerInterceptorRouter()
 registerConfigRouter()
 
 registerCancelRouter()
+
+registerWithCredentialRouter()
 
 app.use(router)
 
@@ -175,5 +192,18 @@ function registerCancelRouter(){
     })
   })
 }
+
+function registerWithCredentialRouter(){
+  router.get('/more/get',function(req,res){
+    res.json(req.cookies)
+    
+  })
+  router.post('/more/upload', function(req, res) {
+    // console.log(req.body, req.files)
+    res.end('upload success!')
+  })
+}
+
+
 
 
