@@ -20,7 +20,8 @@ const mergeMap: MergeMap = {
   xsrfCookieName: defaultStrat,
   xsrfHeaderName: defaultStrat,
   onUploadProgress: defaultStrat,
-  onDownloadProgress: defaultStrat
+  onDownloadProgress: defaultStrat,
+  auth: deepMergeStrat
 }
 
 // 针对不同的配置属性有不同的合并策略，例如url、params、data这种属性，默认配置显然是没有意义的，它们是和每个请求强相关的，所以我们只从自定义配置中获取。而method,timeout这种，自定义有的话则取自定义的，否则去默认的值

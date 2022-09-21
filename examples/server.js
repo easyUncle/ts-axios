@@ -6,6 +6,7 @@ const path = require('path')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const WebpackConfig = require('./webpack.config')
+const atob = require('atob')
 
 const app = express()
 const compiler = webpack(WebpackConfig)
@@ -28,7 +29,7 @@ require('./server2')
 app.use(webpackHotMiddleware(compiler))
 
 app.use(express.static(__dirname, {
-  setHeaders (res) {
+  setHeaders(res) {
     res.cookie('XSRF-TOKEN-D', '1234abc')
   }
 }))
@@ -57,7 +58,7 @@ registerConfigRouter()
 
 registerCancelRouter()
 
-registerWithCredentialRouter()
+registerMoreRouter()
 
 app.use(router)
 
@@ -167,43 +168,51 @@ function registerInterceptorRouter() {
   })
 }
 
-function registerConfigRouter(){
-  router.post('/config/post',function(req,res){
+function registerConfigRouter() {
+  router.post('/config/post', function (req, res) {
     res.json({
-      a:1
+      a: 1
     })
   })
-  router.get('/config/get',function(req,res){
+  router.get('/config/get', function (req, res) {
     res.json({
-      a:1
-    })
-  })
-}
-
-function registerCancelRouter(){
-  router.post('/cancel/post',function(req,res){
-    res.json({
-      a:1
-    })
-  })
-  router.get('/cancel/get',function(req,res){
-    res.json({
-      a:1
+      a: 1
     })
   })
 }
 
-function registerWithCredentialRouter(){
-  router.get('/more/get',function(req,res){
+function registerCancelRouter() {
+  router.post('/cancel/post', function (req, res) {
+    res.json({
+      a: 1
+    })
+  })
+  router.get('/cancel/get', function (req, res) {
+    res.json({
+      a: 1
+    })
+  })
+}
+
+function registerMoreRouter() {
+  router.get('/more/get', function (req, res) {
     res.json(req.cookies)
-    
+
   })
-  router.post('/more/upload', function(req, res) {
+  router.post('/more/upload', function (req, res) {
     // console.log(req.body, req.files)
     res.end('upload success!')
   })
+
+  router.post('/more/post', function (req, res) {
+    const auth = req.headers.authorization
+    const [type, credentials] = auth.split(' ')
+    console.log(atob(credentials))
+    const [username, password] = atob(credentials).split(':')
+    if (type === 'Basic' && username === 'Yee' && password === '123456') {
+      res.json(req.body)
+    } else {
+      res.end('UnAuthorization')
+    }
+  })
 }
-
-
-
-

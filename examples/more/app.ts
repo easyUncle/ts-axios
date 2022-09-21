@@ -23,7 +23,6 @@ import 'nprogress/nprogress.css'
 //   console.log(res)
 // })
 
-
 const instance = axios.create()
 
 function calculatePercentage(loaded: number, total: number) {
@@ -48,13 +47,16 @@ function loadProgressBar() {
   }
 
   const setupStopProgress = () => {
-    instance.interceptors.response.use(response => {
-      NProgress.done()
-      return response
-    }, error => {
-      NProgress.done()
-      return Promise.reject(error)
-    })
+    instance.interceptors.response.use(
+      response => {
+        NProgress.done()
+        return response
+      },
+      error => {
+        NProgress.done()
+        return Promise.reject(error)
+      }
+    )
   }
 
   setupStartProgress()
@@ -81,3 +83,20 @@ uploadEl!.addEventListener('click', e => {
     instance.post('/more/upload', data)
   }
 })
+
+axios
+  .post(
+    '/more/post',
+    {
+      a: 1
+    },
+    {
+      auth: {
+        username: 'Yee',
+        password: '123456'
+      }
+    }
+  )
+  .then(res => {
+    console.log(res)
+  })
