@@ -4,6 +4,7 @@ import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../type'
 import { isURLSameOrigin } from '../helpers/url'
 import cookie from '../helpers/cookies'
 import { isFormData } from '../helpers/utils'
+import { listenerCount } from 'process'
 
 export default function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
@@ -20,7 +21,8 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
       xsrfHeaderName,
       onUploadProgress,
       onDownloadProgress,
-      auth
+      auth,
+      validateStatus
     } = config
 
     const request = new XMLHttpRequest()
@@ -127,7 +129,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
     }
     //响应结果处理
     function handleResponse(res: AxiosResponse): void {
-      if (request.status >= 200 && request.status < 300) {
+      if (validateStatus!(request.status)) {
         resolve(res)
       } else {
         reject(
