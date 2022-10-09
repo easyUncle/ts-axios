@@ -1,7 +1,8 @@
 import { isPlainObject } from './utils'
-import {Methods} from '../type'
-import {deepMerge} from '../helpers/utils'
+import { Methods } from '../type'
+import { deepMerge } from '../helpers/utils'
 function normalizeHeader(headers: any, normalName: string): void {
+  if (!headers) return
   Object.keys(headers).forEach(name => {
     if (name !== normalName && name.toUpperCase() === normalName.toUpperCase()) {
       headers[normalName] = headers[name]
@@ -21,11 +22,12 @@ export function proccessHeaders(headers: any, data: any): any {
 
 export function parseHeaders(headers: string): any {
   if (!headers) {
-    return
+    return {}
   }
   const parse = Object.create(null)
   headers.split('\r\n').forEach(item => {
-    let [key, value] = item.split(':')
+    const match = item.match(/([^:]*):(.*)/)
+    let [key, value] = [match![1], match![2]]
     if (!key) {
       return
     }

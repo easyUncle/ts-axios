@@ -69,6 +69,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
           data: responseData,
           status: request.status,
           statusText: request.statusText,
+          request,
           config,
           headers
         }

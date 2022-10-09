@@ -11,7 +11,7 @@ function encode(url: string): string {
     .replace(/%3A/gi, ':')
     .replace(/%24/g, '$')
     .replace(/%2C/gi, ',')
-    .replace(/%20/g, '+')
+    .replace(/%2B/g, '+')
     .replace(/%5B/gi, '[')
     .replace(/%5D/gi, ']')
 }
@@ -82,11 +82,11 @@ export function isURLSameOrigin(requestURL: string): boolean {
 }
 
 export function isAbsoluteURL(url: string): boolean {
-  return /([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url)
+  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url)
 }
 
-export function combineURL(relativeURL: string, baseURL?: string): string {
-  return baseURL
+export function combineURL(baseURL: string, relativeURL?: string): string {
+  return relativeURL
     ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
-    : relativeURL.replace(/\/+$/, '')
+    : baseURL.replace(/\/+$/, '')
 }
