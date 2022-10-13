@@ -10,7 +10,7 @@ export default class InterceptorManager<T> {
   constructor() {
     this.interceptors = []
   }
-  //use方法返回的是intorceptor的id,用来实现eject方法（删除对应的intorceptor）
+  // use方法返回的是intorceptor的id,用来实现eject方法（删除对应的intorceptor）
   use(resolved: ResolvedFn<T>, rejected?: RejectedFn): number {
     this.interceptors.push({
       resolved,
@@ -20,15 +20,14 @@ export default class InterceptorManager<T> {
   }
 
   eject(id: number): void {
-    if(this.interceptors[id]){
-        this.interceptors[id] = null
+    if (this.interceptors[id]) {
+      this.interceptors[id] = null
     }
   }
   // 相当于做了一次事件派发，当外部调用此方法，相当于触发了forEach事件，从而访问到此类内部的属性值
-  forEach(fn:(interceptor:Interceptor<T>)=>void):void{
-    this.interceptors.forEach(interceptor=>{
-       interceptor && fn(interceptor)
+  forEach(fn: (interceptor: Interceptor<T>) => void): void {
+    this.interceptors.forEach(interceptor => {
+      interceptor && fn(interceptor)
     })
   }
-
 }

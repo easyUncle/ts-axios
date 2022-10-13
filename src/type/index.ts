@@ -55,16 +55,14 @@ export interface AxiosError extends Error {
   response?: AxiosResponse
   isAxiosError: boolean
 }
-/**
- *  axios.request(config)
-    axios.get(url[, config])
-    axios.delete(url[, config])
-    axios.head(url[, config])
-    axios.options(url[, config])
-    axios.post(url[, data[, config]])
-    axios.put(url[, data[, config]])
-    axios.patch(url[, data[, config]]
- */
+// axios.request(config)
+//   axios.get(url[, config])
+//   axios.delete(url[, config])
+//   axios.head(url[, config])
+//   axios.options(url[, config])
+//   axios.post(url[, data[, config]])
+//   axios.put(url[, data[, config]])
+//   axios.patch(url[, data[, config]]
 
 export interface Axios {
   defaults: AxiosRequestConfig
@@ -97,14 +95,14 @@ export interface AxiosInstance extends Axios {
   <T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
 }
 
-//定义拦截器接口，请求拦截器接口和响应拦截接口
+// 定义拦截器接口，请求拦截器接口和响应拦截接口
 export interface AxiosInterceptorManager<T> {
   use(resolveFn: ResolvedFn<T>, rejectedFn?: RejectedFn): number
 
   eject(id: number): void
 }
 
-//因为请求拦截器传入的参数为config,而响应拦截器处理的参数为response，所以这里使用泛型
+// 因为请求拦截器传入的参数为config,而响应拦截器处理的参数为response，所以这里使用泛型
 export interface ResolvedFn<T> {
   (val: T): T | Promise<T>
 }

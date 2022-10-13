@@ -1,11 +1,11 @@
 {
-  "name": "ts-axios",
+  "name": "ts-axios-esun",
   "version": "0.0.0",
   "description": "",
   "keywords": [],
-  "main": "dist/ts-axios.umd.js",
-  "module": "dist/ts-axios.es5.js",
-  "typings": "dist/types/ts-axios.d.ts",
+  "main": "dist/axios.umd.js",
+  "module": "dist/axios.es5.js",
+  "typings": "dist/types/index.d.ts",
   "files": [
     "dist"
   ],
@@ -24,7 +24,7 @@
     "prebuild": "rimraf dist",
     "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
     "start": "rollup -c rollup.config.ts -w",
-    "test": "jest --coverage",
+    "test": "jest --coverage && jasmine",
     "test:watch": "jest --coverage --watch",
     "test:prod": "npm run lint && npm run test -- --no-cache",
     "deploy-docs": "ts-node tools/gh-pages-publish",
@@ -33,7 +33,9 @@
     "semantic-release": "semantic-release",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
     "precommit": "lint-staged",
-    "travis-deploy-once": "travis-deploy-once"
+    "travis-deploy-once": "travis-deploy-once",
+    "prepub": "npm run build",
+    "pub": "sh release.sh"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
@@ -52,7 +54,7 @@
     },
     "testEnvironment": "jsdom",
     "testRegex": "/test/.*\\.(test|spec)\\.(ts)$",
-    "collectCoverage":true,
+    "collectCoverage": true,
     "moduleFileExtensions": [
       "ts",
       "tsx",
@@ -90,6 +92,7 @@
   "devDependencies": {
     "@commitlint/cli": "^7.1.2",
     "@commitlint/config-conventional": "^7.1.2",
+    "@types/jasmine-ajax": "^3.3.3",
     "@types/jest": "^29.0.3",
     "@types/node": "^10.11.0",
     "body-parser": "^1.18.3",
@@ -102,9 +105,14 @@
     "cz-conventional-changelog": "^2.1.0",
     "express": "^4.18.1",
     "husky": "^1.0.1",
+    "jasmine": "^4.4.0",
+    "jasmine-ajax": "^4.0.0",
+    "jasmine-browser-runner": "^1.2.0",
+    "jasmine-core": "^4.4.0",
     "jest": "^29.0.3",
     "jest-config": "^29.0.3",
     "jest-environment-jsdom": "^29.0.3",
+    "jest-jasmine2": "^29.1.2",
     "lint-staged": "^8.0.0",
     "lodash.camelcase": "^4.3.0",
     "prettier": "^1.14.3",
@@ -128,16 +136,19 @@
     "tslint-config-prettier": "^1.15.0",
     "tslint-config-standard": "^8.0.1",
     "tslint-loader": "^3.5.4",
-    "typedoc": "^0.12.0",
-    "typescript": "^4.3.0",
+    "typedoc": "^0.17.8",
+    "typescript": "^4.8.4",
     "webpack": "^4.28.4",
     "webpack-dev-middleware": "^3.5.0",
     "webpack-hot-middleware": "^2.24.3"
   },
   "dependencies": {
+    "@types/jasmine-ajax": "^3.3.3",
     "atob": "^2.1.2",
     "connect-multiparty": "^2.2.0",
     "cookie-parser": "^1.4.6",
+    "jasmine-ajax": "^4.0.0",
+    "jasmine-core": "^4.4.0",
     "nprogress": "^0.2.0"
   }
 }

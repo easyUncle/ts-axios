@@ -10,7 +10,10 @@ export function transformResponseData(data: any): any {
   if (typeof data === 'string') {
     try {
       data = JSON.parse(data)
-    } catch (err) {}
+    } catch (err) {
+      /* istanbul ignore next */
+      // do nothing
+    }
   }
   return data
 }

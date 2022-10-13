@@ -6,7 +6,7 @@ import mergeConfig from './core/mergeConfig'
 import CancelToken from './cancel/cancelToken'
 import Cancel, { isCancel } from './cancel/cancel'
 
-//混合对象实现
+// 混合对象实现
 function createInstance(config: AxiosRequestConfig): AxiosStatic {
   const context = new Axios(config)
   const instance = Axios.prototype.request.bind(context)

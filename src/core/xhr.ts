@@ -4,7 +4,6 @@ import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../type'
 import { isURLSameOrigin } from '../helpers/url'
 import cookie from '../helpers/cookies'
 import { isFormData } from '../helpers/utils'
-import { listenerCount } from 'process'
 
 export default function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
@@ -56,7 +55,7 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
     function addEvent(): void {
       // 请求响应处理
       request.onreadystatechange = function() {
-        if (request.readyState != 4) {
+        if (request.readyState !== 4) {
           return
         }
         if (request.status === 0) {
@@ -75,11 +74,11 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
         }
         handleResponse(response)
       }
-      //网络异常处理
+      // 网络异常处理
       request.onerror = function() {
         reject(createError('Network Error', config, null, request))
       }
-      //请求超时处理
+      // 请求超时处理
       request.ontimeout = function() {
         reject(
           createError(`Timeout of ${config.timeout} ms exceeded`, config, 'ECONNABORTED', request)
@@ -122,13 +121,20 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
 
     function processCancel(): void {
       if (cancelToken) {
-        cancelToken.promise.then(reason => {
-          request.abort()
-          reject(reason)
-        })
+        cancelToken.promise
+          .then(reason => {
+            request.abort()
+            reject(reason)
+          })
+          .catch(
+            /* istanbul ignore next */
+            () => {
+              // do nothing
+            }
+          )
       }
     }
-    //响应结果处理
+    // 响应结果处理
     function handleResponse(res: AxiosResponse): void {
       if (validateStatus!(request.status)) {
         resolve(res)
